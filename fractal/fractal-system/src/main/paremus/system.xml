@@ -1,0 +1,91 @@
+<system
+    xmlns="http://schema.paremus.com/sf/1.2"
+    name="fractal-demo"
+    version="1.0.0"
+    boundary="fabric"
+    repopath="">
+
+    <description>
+       Deploy the Fractal viewer and optional additional calculation workers
+    </description>
+    
+    <admin group="demo" />
+    
+    <!-- 
+   		The Fractal viewer, some basic colour maps, and a load balancer.
+    -->
+    <system.part name="viewer">
+    
+        <description>
+            The Fractal viewer and a load balancer for remote equations
+        </description>
+    
+        <system.part.element category="osgi.bundle" name="fractal-http"/>
+
+        <config pid="org.apache.felix.http">
+            <property name="org.osgi.service.http.port" value="8192"/>
+        </config>
+           
+        <!-- Provide colour mappings -->
+        <system.part.element category="osgi.bundle" name="fractal-colours"/>
+        
+        <!-- Provide a basic mandelbrot equation -->
+        <system.part.element category="osgi.bundle" name="fractal-equation"/>
+        
+        <!-- Provide service load balancer -->
+        <system.part.element category="osgi.bundle" name="com.paremus.fabric.balancer"/>
+        
+        <!-- Configure a load balancer for mandelbrot equation instances -->
+        <config pid="com.paremus.fabric.balancer" factory="true">
+            <property name="interfaces" value="com.paremus.demo.fractal.api.Equation" />
+            <property name="target.filter" value="(equation.type=mandelbrot)" />
+            <property name="equation.type" value="mandelbrot (load balanced)" />
+            <!-- Add defaults which cover the standard range of fractal values -->
+            <property name="minX" value="-2.0" />
+            <property name="maxX" value="1.0" />
+            <property name="minY" value="-1.3" />
+            <property name="maxY" value="1.3" />
+            <property name="iterations" value="100" />
+        </config>
+        
+        <!-- Configure a load balancer for julia equation instances -->
+        <config pid="com.paremus.fabric.balancer" factory="true">
+            <property name="interfaces" value="com.paremus.demo.fractal.api.Equation" />
+            <property name="target.filter" value="(equation.type=julia)" />
+            <property name="equation.type" value="julia (load balanced)" />
+            <!-- Add defaults which cover the standard range of fractal values -->
+            <property name="minX" value="-1.65" />
+            <property name="maxX" value="1.65" />
+            <property name="minY" value="-1.43" />
+            <property name="maxY" value="1.43" />
+            <property name="iterations" value="200" />
+        </config>
+        
+    </system.part>
+
+    
+    <!-- Workers providing equations -->
+    <system.part name="workers" >
+
+        <description>
+            Remote worker services
+        </description>
+        
+        <system.part.element category="osgi.bundle" name="fractal-equation" >
+            <!-- Make the equations available remotely -->
+            <config pid="com.paremus.demo.fractal.equation.MandelbrotEquation">
+                <property name="service.exported.interfaces" value="com.paremus.demo.fractal.api.Equation" />
+            </config>
+            <config pid="com.paremus.demo.fractal.equation.JuliaEquation">
+                <property name="service.exported.interfaces" value="com.paremus.demo.fractal.api.Equation" />
+            </config>
+        </system.part.element>
+        
+        <!-- Start with one worker, and add them in by changing this value -->
+        <replication.handler type="fixed">
+            <property name="size" value="1" type="integer" />
+        </replication.handler>
+        
+    </system.part>
+    
+</system>

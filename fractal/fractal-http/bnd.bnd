@@ -1,0 +1,25 @@
+# Repackage the Jersey runtime to provide JAX-RS support
+Conditional-Package: \
+	org.glassfish.jersey.*, \
+	org.glassfish.hk2.*, \
+	org.jvnet.*, \
+	javassist.*, \
+	javax.validation.*, \
+	javax.ws.rs.*, \
+	jersey.repackaged.*
+
+# Avoid importing the following unnecessary dependencies from Jersey
+Import-Package: \
+	!com.sun.research.*, \
+	!javax.persistence, \
+	!jersey.repackaged.*, \
+	!org.aopalliance.*, \
+	!org.glassfish.*, \
+	!org.jvnet.*, \
+	!sun.misc.*, \
+	*
+
+# Require the HTTP whiteboard and the Http Publish whiteboards
+Require-Capability: \
+	osgi.implementation;filter:="(&(osgi.implementation=osgi.http)(version>=1)(!(version>=2)))",\
+    osgi.implementation; filter:="(&(osgi.implementation=com.paremus.http.publish)(version>=1.0)(!(version>=2.0)))"

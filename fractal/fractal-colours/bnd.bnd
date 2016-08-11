@@ -1,0 +1,1 @@
+Provide-Capability: osgi.service;objectClass="com.paremus.demo.fractal.api.ColourMap"

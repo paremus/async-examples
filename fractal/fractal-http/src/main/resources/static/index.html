@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" ng-app>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paremus Service Fabric Fractal Example</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/EventSource.js"></script>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="lib/jquery/jquery-1.10.1.min.js"></script>
+  <script src="lib/bootstrap/bootstrap.min.js"></script>
+</head>
+
+<body ng-controller="FractalDemoCtl">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="span4 logo">
+        <img border="0" src="img/logo-paremus.png" alt="Paremus Ltd">
+      </div>
+      <div class="span4">
+        <h4 ng-bind-template="Welcome to the Fractal Example"></h4>
+      </div>
+    </div>
+    
+    <div class="row-fluid">    
+      <div class="span4">
+        <span ng-if="!equations || !colourSchemes">No equations or colour schemes to display. Is everything deployed properly?</span>
+        
+        
+        <form ng-if="equations && colourSchemes">
+          <fieldset>
+            <legend>Select your Fractal</legend>
+            <label>Equation to display:</label> 
+            <select ng-model="$parent.equation" 
+          	  ng-options="eq['equation.type'] for eq in equations"
+          	  ng-change="updateDefaults()"></select>
+
+              <label>Minimum X coordinate:</label> 
+              <input type="number" step="any" ng-model="$parent.minX"/>
+              
+              <label>Maximum X coordinate:</label>
+              <input type="number" step="any" ng-model="$parent.maxX"/>
+              
+              <label>Minimum Y coordinate:</label>
+              <input type="number" step="any" ng-model="$parent.minY"/>
+              
+              <label>Maximum Y coordinate:</label>
+              <input type="number" step="any" ng-model="$parent.maxY"/>
+              
+              <label>Maximum iterations:</label>
+              <input type="number" ng-model="$parent.iterations"/>
+          
+              <label>Select colour scheme:</label>
+              <select name="colour-scheme" ng-model="$parent.colourScheme" 
+                 ng-options="cs for cs in colourSchemes">
+              </select>
+
+              <label class="checkbox">
+                 <input type="checkbox" ng-model="$parent.async" />
+                 Run Asynchronously
+              </label>
+
+              <button class="btn btn-primary" type="button" ng-click="render()">Display Fractal</button> 
+              <button class="btn btn-primary" type="button" ng-click="updateDefaults()">Reset</button>
+            </fieldset>
+        </form>
+      </div>
+      <div class="span8">
+        <legend>Double-Click to zoom</legend>
+        <canvas id="fractalCanvas" width="480" height="416" ng-dblClick="zoom($event)">
+          HTML 5 canvas is not supported
+        </canvas>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
