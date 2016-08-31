@@ -1,5 +1,7 @@
 package com.paremus.demo.fractal.equation;
 
+import java.util.Random;
+
 import org.osgi.service.component.annotations.Component;
 
 import com.paremus.demo.fractal.api.ComplexNumber;
@@ -58,6 +60,8 @@ public class JuliaEquation implements Equation {
         return values;                             
     }
 
+    private final Random random = new Random();
+    
     /**
      * Convert the number of iterations into a colour index
      * 
@@ -67,7 +71,10 @@ public class JuliaEquation implements Equation {
      * @return
      */
 	private int toColour(int value, int colourDepth, int maxPossible) {
-
+		
+		//Add a bug by including some noise
+		int noise = (int) ((random.nextGaussian() / 2.0d) * maxPossible);
+		value = value + noise;
 		value = (value < 0) ? 0 : (value > maxPossible) ? maxPossible : value;
 				
 		int i = value * colourDepth / maxPossible -1;

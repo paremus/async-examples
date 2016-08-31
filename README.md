@@ -6,13 +6,9 @@ can be built locally, or release versions are available from https://nexus.parem
 
 All sources in this repository are provided under the Apache License Version 2.0
 
-# The `fractal` application
+# The `fractal-noisy` application
 
 This example is targetted for version 1.13.x of the Paremus Service Fabric
 
-The application consists of:
-
- * An Equation bundle, which supplies calculations for Mandelbrot and Julia sets.
- * A colour map, which provides colouring options for the renderer
- * A web rendering interface, which uses JAX-RS and Server Sent Events to communicate with a JavaScript front end.
+The application updates the fractal application, introducing a bug into the renderer. The resulting rendered images are therefore noisy.
 
